@@ -44,7 +44,7 @@ public class OrderSender {
     private BrokerMessageLogMapper brokerMessageLogMapper;
 
     // 异步监听broker回调函数
-    final RabbitTemplate.ConfirmCallback confirmCallback = new RabbitTemplate.ConfirmCallback() {
+    /*final RabbitTemplate.ConfirmCallback confirmCallback = new RabbitTemplate.ConfirmCallback() {
         @Override
         public void confirm(CorrelationData correlationData, boolean ack, String cause) {
             System.err.println("correlationData: " + correlationData);
@@ -57,7 +57,18 @@ public class OrderSender {
                 System.err.println("异常处理...");
             }
         }
-    };
+    };*/
+
+    // 异步监听broker回调函数(lambda)
+    final RabbitTemplate.ConfirmCallback confirmCallback = ((correlationData, ack, cause) -> {
+        System.err.println("correlationData: " + correlationData);
+        if (ack) {
+            brokerMessageLogMapper.changeBrokerMessageLogStatus(correlationData.getId(), Constants.ORDER_SEND_SUCCESS, new Date());
+        } else {
+            System.err.println("异常处理...");
+        }
+    });
+
 
     // 消息发送rabbitmq
     public void sendOrder(Order order) throws Exception {

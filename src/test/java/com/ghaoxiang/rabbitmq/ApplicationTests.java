@@ -21,7 +21,7 @@ public class ApplicationTests {
 	@Test
 	public void testSend() throws Exception {
 		Order order = new Order();
-		order.setId(20190109);
+		order.setId(201901018);
 		order.setName("测试订单2019-01-09");
 		order.setMessageId(System.currentTimeMillis()+"$"+ UUID.randomUUID().toString());
 		orderService.createOrder(order);
